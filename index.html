@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cuteness Detector 🤍</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body{
+      height:100vh;
+      overflow:hidden;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background: linear-gradient(135deg, #fff5f8, #ffffff);
+      position:relative;
+    }
+
+    .container{
+      width:90%;
+      max-width:450px;
+      text-align:center;
+      background: rgba(255,255,255,0.35);
+      backdrop-filter: blur(10px);
+      border-radius:25px;
+      padding:40px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+      z-index:2;
+    }
+
+    h1{
+      color:#444;
+      margin-bottom:25px;
+      font-size:2rem;
+    }
+
+    .meter-box{
+      width:100%;
+      height:35px;
+      background:#f1f1f1;
+      border-radius:50px;
+      overflow:hidden;
+    }
+
+    /* RED LOADING BAR */
+
+    .meter{
+      width:0%;
+      height:100%;
+      border-radius:50px;
+      background: linear-gradient(90deg, #ff1e56, #ff4d6d);
+      transition:width 0.08s linear;
+      box-shadow:0 0 15px rgba(255,0,80,0.5);
+    }
+
+    .percent{
+      margin-top:20px;
+      font-size:2.5rem;
+      font-weight:bold;
+      color:#444;
+    }
+
+    .sub{
+      margin-top:10px;
+      color:#666;
+      font-size:1rem;
+    }
+
+    /* POPUP */
+
+    .popup{
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%) scale(0);
+      background:white;
+      width:85%;
+      max-width:360px;
+      padding:30px;
+      border-radius:25px;
+      text-align:center;
+      box-shadow:0 15px 50px rgba(0,0,0,0.2);
+      transition:0.3s ease;
+      z-index:10;
+    }
+
+    .popup.active{
+      transform:translate(-50%, -50%) scale(1);
+    }
+
+    .popup h2{
+      color:#ff1e56;
+      font-size:2rem;
+      margin-bottom:15px;
+    }
+
+    .popup p{
+      color:#555;
+      line-height:1.8;
+      margin-bottom:20px;
+      font-size:1rem;
+    }
+
+    .popup button{
+      border:none;
+      background:#ff1e56;
+      color:white;
+      padding:12px 24px;
+      border-radius:40px;
+      cursor:pointer;
+      font-size:1rem;
+    }
+
+    /* WHITE HEARTS */
+
+    .heart{
+      position:absolute;
+      color:white;
+      opacity:0.9;
+      animation:float 5s linear infinite;
+      z-index:1;
+      text-shadow:0 0 12px rgba(255,255,255,1);
+    }
+
+    @keyframes float{
+      from{
+        transform:translateY(100vh) scale(0.7);
+      }
+      to{
+        transform:translateY(-120px) scale(1.3);
+      }
+    }
+
+    /* FLOWER RAIN */
+
+    .flower{
+      position:absolute;
+      animation:flowers 4s linear forwards;
+      z-index:9;
+      pointer-events:none;
+    }
+
+    @keyframes flowers{
+
+      from{
+        transform:translateY(-100px) rotate(0deg);
+        opacity:0;
+      }
+
+      to{
+        transform:translateY(110vh) rotate(360deg);
+        opacity:1;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>🤍 Measuring Your Cuteness 🤍</h1>
+
+    <div class="meter-box">
+      <div class="meter" id="meter"></div>
+    </div>
+
+    <div class="percent" id="percent">0%</div>
+
+    <div class="sub">
+      Scanning for dangerous levels of adorableness...
+    </div>
+
+  </div>
+
+  <!-- POPUP -->
+
+  <div class="popup" id="popup">
+
+    <h2>⚠ TOO CUTE</h2>
+
+    <p>
+      Warning detected.<br>
+      Your cuteness has exceeded all measurable limits.<br><br>
+
+      Current Cuteness Level:
+      <b>120%</b> 🤍<br><br>
+
+      Ab jao jhaadu pocha karo 🤥
+    </p>
+
+    <button onclick="closePopup()">Aww 🤍</button>
+
+  </div>
+
+  <script>
+
+    const meter = document.getElementById("meter");
+    const percent = document.getElementById("percent");
+    const popup = document.getElementById("popup");
+
+    let value = 0;
+
+    // CUTENESS METER
+
+    const interval = setInterval(() => {
+
+      value++;
+
+      meter.style.width = Math.min(value, 100) + "%";
+
+      percent.innerText = value + "%";
+
+      if(value >= 120){
+
+        clearInterval(interval);
+
+        popup.classList.add("active");
+
+        startFlowerRain();
+      }
+
+    }, 40);
+
+    // FLOATING WHITE HEARTS
+
+    function createHeart(){
+
+      const heart = document.createElement("div");
+
+      heart.classList.add("heart");
+
+      heart.innerHTML = "🤍";
+
+      heart.style.left = Math.random() * 100 + "vw";
+
+      heart.style.fontSize =
+        (Math.random() * 20 + 15) + "px";
+
+      heart.style.animationDuration =
+        (Math.random() * 3 + 3) + "s";
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 6000);
+    }
+
+    setInterval(createHeart, 250);
+
+    // FLOWER SHOWER
+
+    function startFlowerRain(){
+
+      setInterval(() => {
+
+        const flower = document.createElement("div");
+
+        flower.classList.add("flower");
+
+        const flowers = [
+          "🌸",
+          "🌺",
+          "🌷",
+          "💐",
+          "🌹",
+          "🪷"
+        ];
+
+        flower.innerHTML =
+          flowers[Math.floor(Math.random() * flowers.length)];
+
+        flower.style.left =
+          Math.random() * 100 + "vw";
+
+        flower.style.fontSize =
+          (Math.random() * 25 + 20) + "px";
+
+        flower.style.animationDuration =
+          (Math.random() * 3 + 2) + "s";
+
+        document.body.appendChild(flower);
+
+        setTimeout(() => {
+          flower.remove();
+        }, 5000);
+
+      }, 120);
+    }
+
+    // CLOSE POPUP
+
+    function closePopup(){
+      popup.classList.remove("active");
+    }
+
+  </script>
+
+</body>
+</html>
